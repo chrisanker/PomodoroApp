@@ -12,22 +12,37 @@ public class PomodoroTimer implements ActionListener {
     JButton pauseButton = new JButton("Pause");
     JButton resetButton = new JButton("Reset");
     JLabel timeLabel = new JLabel();
+    JLabel statusLabel = new JLabel();
     int remainingTime = 1500000;
     int seconds = 0;
     int minutes = 25;
     boolean started = false;
+    boolean onABreak = false;
     String secondsString = String.format("%02d",seconds);
     String minutesString = String.format("%02d",minutes);
 
     Timer timer = new Timer(1000, new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            remainingTime -= 1000;
-            minutes = (remainingTime/60000) % 60;
-            seconds = (remainingTime/1000) % 60;
-            secondsString = String.format("%02d",seconds);
-            minutesString = String.format("%02d",minutes);
-            timeLabel.setText(minutesString + ":" + secondsString);
+            if (remainingTime > 0){
+                remainingTime -= 1000;
+                minutes = (remainingTime/60000) % 60;
+                seconds = (remainingTime/1000) % 60;
+                secondsString = String.format("%02d",seconds);
+                minutesString = String.format("%02d",minutes);
+                timeLabel.setText(minutesString + ":" + secondsString);
+            }
+            else if(onABreak == true){
+                onABreak = false;
+                remainingTime = 1500000;
+                statusLabel.setText("Work work!");
+
+            }
+            else{
+                recess();
+                System.out.println("Time is up");
+            }
+
         }
     });
 
@@ -39,6 +54,12 @@ public class PomodoroTimer implements ActionListener {
         timeLabel.setBorder(BorderFactory.createBevelBorder(1));
         timeLabel.setOpaque(true);
         timeLabel.setHorizontalAlignment(JTextField.CENTER);
+
+        statusLabel.setBounds(150,250,200,100);
+        statusLabel.setFont(new Font("Verdana",Font.PLAIN,25));
+        statusLabel.setBorder(BorderFactory.createBevelBorder(1));
+        statusLabel.setOpaque(true);
+        statusLabel.setHorizontalAlignment(JTextField.CENTER);
 
         startButton.setBounds(100,200,100,50);
         startButton.addActionListener(this);
@@ -53,6 +74,7 @@ public class PomodoroTimer implements ActionListener {
         frame.add(pauseButton);
         frame.add(resetButton);
         frame.add(timeLabel);
+        frame.add(statusLabel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(520,420);
         frame.setLayout(null);
@@ -75,6 +97,7 @@ public class PomodoroTimer implements ActionListener {
 
     void start(){
         started = true;
+        statusLabel.setText("Work work!");
         timer.start();
     }
     void pause() {
@@ -90,5 +113,15 @@ public class PomodoroTimer implements ActionListener {
         String secondsString = String.format("%02d",seconds);
         String minutesString = String.format("%02d",minutes);
         timeLabel.setText(minutesString + ":" + secondsString);
+    }
+    void recess(){
+        onABreak = true;
+        remainingTime = 300000;
+        minutes = 5;
+        seconds = 0;
+        secondsString = String.format("%02d",seconds);
+        minutesString = String.format("%02d",minutes);
+        timeLabel.setText(minutesString + ":" + secondsString);
+        statusLabel.setText("On a break.");
     }
 }
