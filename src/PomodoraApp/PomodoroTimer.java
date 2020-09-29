@@ -32,11 +32,11 @@ public class PomodoroTimer implements ActionListener {
                 minutesString = String.format("%02d",minutes);
                 timeLabel.setText(minutesString + ":" + secondsString);
             }
-            else if(onABreak == true){
+            else if(onABreak){
                 onABreak = false;
                 remainingTime = 1500000;
                 statusLabel.setText("Work work!");
-
+                timeLabel.setBackground(Color.red);
             }
             else{
                 recess();
@@ -85,20 +85,29 @@ public class PomodoroTimer implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==startButton){
+            timeLabel.setBackground(Color.red);
             start();
         }
         else if (e.getSource()==pauseButton){
             pause();
         }
         else if (e.getSource()==resetButton){
+            timeLabel.setOpaque(false);
+            timeLabel.repaint();
             reset();
         }
     }
 
     void start(){
-        started = true;
-        statusLabel.setText("Work work!");
-        timer.start();
+        if(!started){
+            started = true;
+            statusLabel.setText("Work work!");
+            timer.start();
+            timeLabel.setOpaque(true);
+            if(onABreak){
+                timeLabel.setBackground(Color.green);
+            }
+        }
     }
     void pause() {
         started = false;
@@ -113,6 +122,7 @@ public class PomodoroTimer implements ActionListener {
         String secondsString = String.format("%02d",seconds);
         String minutesString = String.format("%02d",minutes);
         timeLabel.setText(minutesString + ":" + secondsString);
+        statusLabel.setText("");
     }
     void recess(){
         onABreak = true;
@@ -123,5 +133,6 @@ public class PomodoroTimer implements ActionListener {
         minutesString = String.format("%02d",minutes);
         timeLabel.setText(minutesString + ":" + secondsString);
         statusLabel.setText("On a break.");
+        timeLabel.setBackground(Color.green);
     }
 }
