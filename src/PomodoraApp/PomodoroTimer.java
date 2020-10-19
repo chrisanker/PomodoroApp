@@ -85,27 +85,26 @@ public class PomodoroTimer implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==startButton){
-            timeLabel.setBackground(Color.red);
             start();
         }
         else if (e.getSource()==pauseButton){
             pause();
         }
         else if (e.getSource()==resetButton){
-            timeLabel.setOpaque(false);
-            timeLabel.repaint();
             reset();
         }
     }
 
     void start(){
         if(!started){
+            timeLabel.setBackground(Color.red);
             started = true;
             statusLabel.setText("Work work!");
             timer.start();
             timeLabel.setOpaque(true);
             if(onABreak){
                 timeLabel.setBackground(Color.green);
+                statusLabel.setText("On a break.");
             }
         }
     }
@@ -114,6 +113,8 @@ public class PomodoroTimer implements ActionListener {
         timer.stop();
     }
     void reset() {
+        timeLabel.setOpaque(false);
+        timeLabel.repaint();
         started = false;
         onABreak = false;
         timer.stop();
