@@ -1,9 +1,12 @@
 package PomodoraApp;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class PomodoroTimer implements ActionListener {
 
@@ -13,7 +16,7 @@ public class PomodoroTimer implements ActionListener {
     JButton resetButton = new JButton("Reset");
     JLabel timeLabel = new JLabel();
     JLabel statusLabel = new JLabel();
-    int remainingTime = 1500000;
+    int remainingTime = 3000;
     int seconds = 0;
     int minutes = 25;
     boolean started = false;
@@ -80,6 +83,7 @@ public class PomodoroTimer implements ActionListener {
         frame.setLayout(null);
         frame.setVisible(true);
 
+
     }
 
     @Override
@@ -128,6 +132,8 @@ public class PomodoroTimer implements ActionListener {
     }
     void recess(){
         onABreak = true;
+        File alarmSound = new File("src/sounds/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
+        playAlarmSound(alarmSound);
         remainingTime = 300000;
         minutes = 5;
         seconds = 0;
@@ -136,5 +142,16 @@ public class PomodoroTimer implements ActionListener {
         timeLabel.setText(minutesString + ":" + secondsString);
         statusLabel.setText("On a break.");
         timeLabel.setBackground(Color.green);
+    }
+
+    void playAlarmSound(File Alarm){
+        try{
+            Clip clip = AudioSystem.getClip();
+            clip.open((AudioSystem.getAudioInputStream(Alarm)));
+            clip.start();
+            Thread.sleep(clip.getMicrosecondLength()/1000);
+        }
+        catch (Exception e) {
+        }
     }
 }
