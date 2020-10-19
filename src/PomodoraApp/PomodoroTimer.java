@@ -115,6 +115,7 @@ public class PomodoroTimer implements ActionListener {
     }
     void reset() {
         started = false;
+        onABreak = false;
         timer.stop();
         remainingTime = 1500000;
         seconds = 0;
