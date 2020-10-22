@@ -16,7 +16,7 @@ public class PomodoroTimer implements ActionListener {
     JButton resetButton = new JButton("Reset");
     JLabel timeLabel = new JLabel();
     JLabel statusLabel = new JLabel();
-    int remainingTime = 3000;
+    int remainingTime = 1500000;
     int seconds = 0;
     int minutes = 25;
     boolean started = false;
