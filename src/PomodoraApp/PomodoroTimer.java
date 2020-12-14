@@ -16,7 +16,7 @@ public class PomodoroTimer implements ActionListener {
     JButton resetButton = new JButton("Reset");
     JLabel timeLabel = new JLabel();
     JLabel statusLabel = new JLabel();
-    int remainingTime = 3000;
+    int remainingTime = 1500000;
     int seconds = 0;
     int minutes = 25;
     boolean started = false;
@@ -99,7 +99,7 @@ public class PomodoroTimer implements ActionListener {
         }
     }
 
-    void start(){
+    private void start(){
         if(!started){
             timeLabel.setBackground(Color.red);
             started = true;
@@ -112,11 +112,11 @@ public class PomodoroTimer implements ActionListener {
             }
         }
     }
-    void pause() {
+    private void pause() {
         started = false;
         timer.stop();
     }
-    void reset() {
+    private void reset() {
         timeLabel.setOpaque(false);
         timeLabel.repaint();
         started = false;
@@ -144,7 +144,7 @@ public class PomodoroTimer implements ActionListener {
         timeLabel.setBackground(Color.green);
     }
 
-    void playAlarmSound(File Alarm){
+    private void playAlarmSound(File Alarm){
         try{
             Clip clip = AudioSystem.getClip();
             clip.open((AudioSystem.getAudioInputStream(Alarm)));
