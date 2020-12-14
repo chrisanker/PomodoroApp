@@ -1,4 +1,4 @@
-package PomodoraApp;
+package PomodoroApp;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -18,8 +18,8 @@ public class PomodoroTimer implements ActionListener {
     JButton resetButton = new JButton("Reset");
     JLabel timeLabel = new JLabel();
     JLabel statusLabel = new JLabel();
-    private static final int POMO_TIME_MS = 1500000; // 1500000 = 25 minutes
-    private static final int POMO_BREAK_TIME_MS = 3000; // 300000 = 5 minutes
+    private static final int POMO_TIME_MS = 3000; // 1500000 = 25 minutes
+    private static final int POMO_BREAK_TIME_MS = 300000; // 300000 = 5 minutes
     int remainingTime = POMO_TIME_MS;
     int seconds = 0;
     int minutes = (POMO_TIME_MS / 1000) / 60;
@@ -137,7 +137,7 @@ public class PomodoroTimer implements ActionListener {
     }
     void recess(){
         onABreak = true;
-        File alarmSound = new File("src/sounds/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
+        File alarmSound = new File("resources/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
         if (isUnix) {
             playAlarmSoundLinuxCompatible(alarmSound);
         } else {

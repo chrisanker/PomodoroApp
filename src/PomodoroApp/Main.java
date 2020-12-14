@@ -1,4 +1,4 @@
-package PomodoraApp;
+package PomodoroApp;
 
 public class Main {
 
