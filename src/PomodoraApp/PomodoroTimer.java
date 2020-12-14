@@ -1,7 +1,9 @@
 package PomodoraApp;
 
+import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -16,13 +18,16 @@ public class PomodoroTimer implements ActionListener {
     JButton resetButton = new JButton("Reset");
     JLabel timeLabel = new JLabel();
     JLabel statusLabel = new JLabel();
-    int remainingTime = 1500000;
+    private static final int POMO_TIME_MS = 3000; // 1500000 = 25 minutes
+    private static final int POMO_BREAK_TIME_MS = 3000; // 300000 = 5 minutes
+    int remainingTime = POMO_TIME_MS;
     int seconds = 0;
-    int minutes = 25;
+    int minutes = (POMO_TIME_MS / 1000) / 60;
     boolean started = false;
     boolean onABreak = false;
     String secondsString = String.format("%02d",seconds);
     String minutesString = String.format("%02d",minutes);
+    boolean isUnix;
 
     Timer timer = new Timer(1000, new ActionListener() {
         @Override
@@ -37,7 +42,7 @@ public class PomodoroTimer implements ActionListener {
             }
             else if(onABreak){
                 onABreak = false;
-                remainingTime = 1500000;
+                remainingTime = POMO_TIME_MS;
                 statusLabel.setText("Work work!");
                 timeLabel.setBackground(Color.red);
             }
@@ -49,8 +54,8 @@ public class PomodoroTimer implements ActionListener {
         }
     });
 
-    PomodoroTimer(){
-
+    PomodoroTimer(boolean isUnix){
+        this.isUnix = isUnix;
         timeLabel.setText(minutesString + ":" + secondsString);
         timeLabel.setBounds(100,100,300,100);
         timeLabel.setFont(new Font("Verdana",Font.PLAIN,35));
@@ -122,7 +127,7 @@ public class PomodoroTimer implements ActionListener {
         started = false;
         onABreak = false;
         timer.stop();
-        remainingTime = 1500000;
+        remainingTime = POMO_TIME_MS;
         seconds = 0;
         minutes = 25;
         String secondsString = String.format("%02d",seconds);
@@ -133,9 +138,13 @@ public class PomodoroTimer implements ActionListener {
     void recess(){
         onABreak = true;
         File alarmSound = new File("src/sounds/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
-        playAlarmSound(alarmSound);
-        remainingTime = 300000;
-        minutes = 5;
+        if (isUnix) {
+            playAlarmSoundLinuxCompatible(alarmSound);
+        } else {
+            playAlarmSound(alarmSound);
+        }
+        remainingTime = POMO_BREAK_TIME_MS;
+        minutes = (POMO_BREAK_TIME_MS / 1000) / 60;;
         seconds = 0;
         secondsString = String.format("%02d",seconds);
         minutesString = String.format("%02d",minutes);
@@ -144,13 +153,29 @@ public class PomodoroTimer implements ActionListener {
         timeLabel.setBackground(Color.green);
     }
 
-    private void playAlarmSound(File Alarm){
+    private void playAlarmSound(File file){
         try{
             Clip clip = AudioSystem.getClip();
-            clip.open((AudioSystem.getAudioInputStream(Alarm)));
+            clip.open((AudioSystem.getAudioInputStream(file)));
             clip.start();
         }
         catch (Exception e) {
+            System.err.println("There was an Exception thrown: " + e.getMessage());
+            System.err.println("caused by:\n" + e.getStackTrace()[0].toString());
+        }
+    }
+
+    private void playAlarmSoundLinuxCompatible(File file){
+        try{
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(file.getPath()));
+            DataLine.Info info = new DataLine.Info(Clip.class, inputStream.getFormat());
+            Clip clip = (Clip) AudioSystem.getLine(info);
+            clip.open(inputStream);
+            clip.start();
+        }
+        catch (Exception e) {
+            System.err.println("There was an Exception thrown: " + e.getMessage());
+            System.err.println("caused by:\n" + e.getStackTrace()[0].toString());
         }
     }
 }
