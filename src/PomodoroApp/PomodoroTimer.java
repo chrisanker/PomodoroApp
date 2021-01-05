@@ -1,14 +1,15 @@
 package PomodoroApp;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.InputStream;
 
 public class PomodoroTimer implements ActionListener {
 
@@ -137,11 +138,11 @@ public class PomodoroTimer implements ActionListener {
     }
     void recess(){
         onABreak = true;
-        File alarmSound = new File("resources/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
+        //File alarmSound = new File("resources/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
         if (isUnix) {
-            playAlarmSoundLinuxCompatible(alarmSound);
+            playAlarmSoundLinuxCompatible();
         } else {
-            playAlarmSound(alarmSound);
+            playAlarmSound();
         }
         remainingTime = POMO_BREAK_TIME_MS;
         minutes = (POMO_BREAK_TIME_MS / 1000) / 60;;
@@ -153,11 +154,20 @@ public class PomodoroTimer implements ActionListener {
         timeLabel.setBackground(Color.green);
     }
 
-    private void playAlarmSound(File file){
+    private void playAlarmSound(){
         try{
-            Clip clip = AudioSystem.getClip();
+            //InputStream inputStream = getClass().getResourceAsStream("PomodoroApp/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
+            File alarmSound = new File("resources/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(alarmSound);
+            AudioFormat format = audioStream.getFormat();
+            DataLine.Info info = new DataLine.Info(Clip.class, format);
+            Clip audioClip = (Clip) AudioSystem.getLine(info);
+            audioClip.open(audioStream);
+            audioClip.start();
+
+            /*Clip clip = AudioSystem.getClip();
             clip.open((AudioSystem.getAudioInputStream(file)));
-            clip.start();
+            clip.start();*/
         }
         catch (Exception e) {
             System.err.println("There was an Exception thrown: " + e.getMessage());
@@ -165,9 +175,10 @@ public class PomodoroTimer implements ActionListener {
         }
     }
 
-    private void playAlarmSoundLinuxCompatible(File file){
+    private void playAlarmSoundLinuxCompatible(){
         try{
-            AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(file.getPath()));
+            File alarmSound = new File("resources/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(alarmSound.getPath()));
             DataLine.Info info = new DataLine.Info(Clip.class, inputStream.getFormat());
             Clip clip = (Clip) AudioSystem.getLine(info);
             clip.open(inputStream);
