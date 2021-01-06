@@ -157,7 +157,7 @@ public class PomodoroTimer implements ActionListener {
     private void playAlarmSound(){
         try{
             //InputStream inputStream = getClass().getResourceAsStream("PomodoroApp/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
-            File alarmSound = new File("resources/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
+            File alarmSound = new File("src/PomodoroApp/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(alarmSound);
             AudioFormat format = audioStream.getFormat();
             DataLine.Info info = new DataLine.Info(Clip.class, format);
