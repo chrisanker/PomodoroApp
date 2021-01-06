@@ -1,5 +1,6 @@
 package PomodoroApp;
 
+import com.sun.media.sound.StandardMidiFileReader;
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
 
@@ -10,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
 
 public class PomodoroTimer implements ActionListener {
 
@@ -142,7 +144,7 @@ public class PomodoroTimer implements ActionListener {
         if (isUnix) {
             playAlarmSoundLinuxCompatible();
         } else {
-            playAlarmSound();
+            playSound();
         }
         remainingTime = POMO_BREAK_TIME_MS;
         minutes = (POMO_BREAK_TIME_MS / 1000) / 60;;
@@ -157,8 +159,9 @@ public class PomodoroTimer implements ActionListener {
     private void playAlarmSound(){
         try{
             //InputStream inputStream = getClass().getResourceAsStream("PomodoroApp/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
-            File alarmSound = new File("src/PomodoroApp/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(alarmSound);
+            //File alarmSound = new File("src/PomodoroApp/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
+            URL url = this.getClass().getResource("PomodoroApp/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(url);
             AudioFormat format = audioStream.getFormat();
             DataLine.Info info = new DataLine.Info(Clip.class, format);
             Clip audioClip = (Clip) AudioSystem.getLine(info);
@@ -170,6 +173,21 @@ public class PomodoroTimer implements ActionListener {
             clip.start();*/
         }
         catch (Exception e) {
+            System.err.println("There was an Exception thrown: " + e.getMessage());
+            System.err.println("caused by:\n" + e.getStackTrace()[0].toString());
+        }
+    }
+
+    private void playSound()
+    {
+        try
+        {
+            InputStream inputStream = getClass().getResourceAsStream("Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
+            AudioStream audioStream = new AudioStream(inputStream);
+            AudioPlayer.player.start(audioStream);
+        }
+        catch (Exception e)
+        {
             System.err.println("There was an Exception thrown: " + e.getMessage());
             System.err.println("caused by:\n" + e.getStackTrace()[0].toString());
         }
