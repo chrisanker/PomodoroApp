@@ -140,7 +140,7 @@ public class PomodoroTimer implements ActionListener {
         onABreak = true;
         //File alarmSound = new File("resources/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
         if (isUnix) {
-            playAlarmSoundLinuxCompatible();
+            playAlarmSound();
         } else {
             playAlarmSound();
         }
