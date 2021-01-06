@@ -138,9 +138,9 @@ public class PomodoroTimer implements ActionListener {
     }
     void recess(){
         onABreak = true;
-        //File alarmSound = new File("resources/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
+        File alarmSound = new File("src/PomodoroApp/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
         if (isUnix) {
-            playAlarmSoundLinuxCompatible();
+            playAlarmSoundLinuxCompatible(alarmSound);
         } else {
             playAlarmSound();
         }
@@ -170,9 +170,8 @@ public class PomodoroTimer implements ActionListener {
     }
 
     private void playAlarmSoundLinuxCompatible(File file){
-        File alarmSound = new File("src/PomodoroApp/Ship_Brass_Bell-Mike_Koenig-1458750630.wav");
         try{
-            AudioInputStream inputStream = AudioSystem.getAudioInputStream(alarmSound);
+            AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(file.getPath()));
             DataLine.Info info = new DataLine.Info(Clip.class, inputStream.getFormat());
             Clip clip = (Clip) AudioSystem.getLine(info);
             clip.open(inputStream);
